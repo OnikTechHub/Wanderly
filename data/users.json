@@ -1,0 +1,16 @@
+[
+  {
+    "id": "u-demo-001",
+    "name": "Demo Explorer",
+    "email": "demo@wanderly.com",
+    "passwordHash": "$2b$10$4O5jjIa4SxCNP.o244Dk6eoDnzsh0znYH8aekHwEQLzH0HCJJBFue",
+    "createdAt": "2026-01-05T09:00:00.000Z"
+  },
+  {
+    "id": "u-448670e3-b781-47d3-ae70-7161d48d76e0",
+    "name": "Onik Das",
+    "email": "onikdas.dev@gmail.com",
+    "passwordHash": "$2b$10$vwGWMyYatIIlFRqDXT25O.DfJMYhJ2MZ9TMzhOSWq3sGgPXmXnMee",
+    "createdAt": "2026-07-13T14:08:09.016Z"
+  }
+]
