@@ -47,57 +47,63 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container-app py-16 max-w-md mx-auto">
-      <div className="text-center mb-8">
-        <Compass className="mx-auto text-[var(--color-primary)] mb-2" size={32} />
-        <h1 className="text-2xl font-extrabold">Welcome back</h1>
-        <p className="text-gray-500 text-sm mt-1">Log in to book and manage your tours.</p>
-      </div>
-
-      <form onSubmit={submit} className="card-base p-6 space-y-4">
-        {error && (
-          <div className="flex items-center gap-2 bg-red-50 text-red-600 text-sm p-3 rounded-lg">
-            <AlertCircle size={16} /> {error}
+    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4">
+      <div className="w-full max-w-[400px]">
+        <div className="text-center mb-8">
+          <div className="bg-[var(--color-primary)]/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Compass className="text-[var(--color-primary)]" size={32} />
           </div>
-        )}
-        <div>
-          <label className="text-xs font-semibold text-gray-500 block mb-1.5">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[var(--color-primary)]"
-            placeholder="you@example.com"
-          />
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Welcome back</h1>
+          <p className="text-gray-500 text-sm mt-2">Log in to book and manage your tours.</p>
         </div>
-        <div>
-          <label className="text-xs font-semibold text-gray-500 block mb-1.5">Password</label>
-          <div className="relative">
+
+        <form onSubmit={submit} className="bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-5">
+          {error && (
+            <div className="flex items-center gap-2 bg-red-50 text-red-600 text-sm p-3 rounded-xl border border-red-100">
+              <AlertCircle size={16} /> {error}
+            </div>
+          )}
+          
+          <div>
+            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Email</label>
             <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[var(--color-primary)] pr-10"
-              placeholder="••••••••"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all"
+              placeholder="you@example.com"
             />
-            <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
           </div>
-        </div>
 
-        <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
-          {loading ? "Logging in..." : "Log in"}
-        </button>
+          <div>
+            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all pr-12"
+                placeholder="••••••••"
+              />
+              <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
-        <button type="button" onClick={useDemo} className="btn-outline w-full text-sm">
-          Use Demo Login
-        </button>
-      </form>
+          <button type="submit" disabled={loading} className="w-full bg-[var(--color-primary)] text-white font-bold py-3.5 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60">
+            {loading ? "Logging in..." : "Log in"}
+          </button>
 
-      <p className="text-center text-sm text-gray-500 mt-6">
-        Don&apos;t have an account? <Link href="/register" className="text-[var(--color-primary)] font-semibold">Sign up</Link>
-      </p>
+          <button type="button" onClick={useDemo} className="w-full bg-gray-100 text-gray-700 font-semibold py-3.5 rounded-xl hover:bg-gray-200 transition-all text-sm">
+            Use Demo Login
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-gray-500 mt-8">
+          Don't have an account? <Link href="/register" className="text-[var(--color-primary)] font-bold hover:underline">Sign up</Link>
+        </p>
+      </div>
     </div>
   );
 }
