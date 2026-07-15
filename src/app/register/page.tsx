@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Compass, AlertCircle } from "lucide-react";
+import { Compass, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 
 export default function RegisterPage() {
@@ -12,6 +12,10 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -74,45 +78,44 @@ export default function RegisterPage() {
 
           <div>
             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Full Name</label>
-            <input 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all" 
-              placeholder="Jane Traveler" 
-            />
+            <input value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all" placeholder="Jane Traveler" />
           </div>
 
           <div>
             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Email</label>
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all" 
-              placeholder="you@example.com" 
-            />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all" placeholder="you@example.com" />
           </div>
 
           <div>
             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Password</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all" 
-              placeholder="At least 6 characters" 
-            />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all pr-12" 
+                placeholder="At least 6 characters" 
+              />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <div>
             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Confirm Password</label>
-            <input 
-              type="password" 
-              value={confirm} 
-              onChange={(e) => setConfirm(e.target.value)} 
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all" 
-              placeholder="Repeat password" 
-            />
+            <div className="relative">
+              <input 
+                type={showConfirm ? "text" : "password"} 
+                value={confirm} 
+                onChange={(e) => setConfirm(e.target.value)} 
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all pr-12" 
+                placeholder="Repeat password" 
+              />
+              <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <button type="submit" disabled={loading} className="w-full bg-[var(--color-primary)] text-white font-bold py-3.5 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 mt-2">
