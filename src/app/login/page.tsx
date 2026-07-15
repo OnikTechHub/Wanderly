@@ -95,9 +95,9 @@ export default function LoginPage() {
             {loading ? "Logging in..." : "Log in"}
           </button>
 
-          <button type="button" onClick={useDemo} className="w-full bg-gray-100 text-gray-700 font-semibold py-3.5 rounded-xl hover:bg-gray-200 transition-all text-sm">
+          {/* <button type="button" onClick={useDemo} className="w-full bg-gray-100 text-gray-700 font-semibold py-3.5 rounded-xl hover:bg-gray-200 transition-all text-sm">
             Use Demo Login
-          </button>
+          </button> */}
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-8">
