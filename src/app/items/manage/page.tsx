@@ -9,7 +9,7 @@ export default async function ManageItemsPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const tours = getTours();
+  const tours = await getTours();
 
   return (
     <div className="container-app py-10">

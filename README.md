@@ -1,35 +1,44 @@
-# Wanderly — Full-Stack Tour Booking Platform
+# Wanderly Frontend (Next.js + TypeScript)
 
-A production-ready full-stack TypeScript app built with **Next.js (App Router)**, **TypeScript**, and **Tailwind CSS**, satisfying the SCIC-13 Assignment 3 requirements.
-
-## Tech Stack
-- Frontend: Next.js 16, React 19, TypeScript, Tailwind CSS v4, Recharts, lucide-react
-- Backend: Next.js API Routes (Node runtime), TypeScript
-- Data: Local JSON files (`data/tours.json`, `data/users.json`) acting as a lightweight "static data" store — no external DB/network service required, works fully offline
-- Auth: JWT stored in an HTTP-only cookie, passwords hashed with bcrypt
+The Wanderly UI, built with **Next.js (App Router)**, **TypeScript**, and **Tailwind CSS**.
+This app has **no backend logic of its own** — all data and auth live in a separate
+**Node.js + Express** API (see the sibling `wanderly-backend` project) and this app calls it over HTTP.
 
 ## Getting Started
+1. Start the backend first (in the `wanderly-backend` folder): `npm install && npm start` (runs on :5000)
+2. Then, in this folder:
 ```bash
 npm install
 npm run dev
 ```
 Open http://localhost:3000
 
+## Environment Variables (`.env.local`)
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+Points the frontend at the Express backend. Change this if you deploy the backend elsewhere.
+
 ## Demo Login
 - Email: `demo@wanderly.com`
 - Password: `demo1234`
 (Or click "Use Demo Login" on the /login page to auto-fill.)
 
-## Pages
-- `/` — Home with hero + 8 sections (features, categories, popular tours, stats, testimonials, blog, FAQ, newsletter)
-- `/explore` — Search, filter (category/price/rating), sort, pagination, skeleton loaders
-- `/tours/[id]` — Tour details with gallery, itinerary, related tours
-- `/login`, `/register` — Auth with validation
-- `/items/add` — Protected: add a tour (redirects to /login if logged out)
-- `/items/manage` — Protected: table of all tours with View/Delete actions
-- `/dashboard` — Protected: stats + chart
-- `/about`, `/contact`, `/blog`, `/help`, `/privacy` — Additional pages
+## How it talks to the backend
+- `src/lib/api.ts` — shared `API_URL` + `apiFetch()` client-side helper (sends cookies with `credentials: "include"`)
+- `src/lib/db.ts` — server-side helpers (`getTours`, `getTourById`) that `fetch()` the Express API from Server Components
+- `src/lib/auth.ts` — reads the JWT cookie from the incoming request and calls the backend's `/api/auth/me` to check who's logged in (used to protect `/items/add`, `/items/manage`, `/dashboard`)
 
-## Notes
-- Data persists to the JSON files on disk while the dev/prod server runs.
-- To reset demo data, restore `data/tours.json` and `data/users.json` from git history.
+## Pages
+- `/` — Home with hero + 8 sections
+- `/explore` — Search, filter, sort, pagination, skeleton loaders
+- `/tours/[id]` — Tour details
+- `/login`, `/register` — Auth
+- `/items/add`, `/items/manage` — Protected (redirect to /login if logged out)
+- `/dashboard` — Protected, stats + chart
+- `/about`, `/contact`, `/blog`, `/help`, `/privacy` — Static pages
+
+## Note
+Because auth now lives on a separate Express server, **both apps must be running** for
+login, adding tours, and protected pages to work. The homepage and tour listings will still
+render (empty) if only the frontend is running, since `getTours()` will fail gracefully.

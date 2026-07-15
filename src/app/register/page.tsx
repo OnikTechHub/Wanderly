@@ -1,96 +1,98 @@
 "use client";
-import React, { useState } from "react";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaArrowRight, FaUtensils } from "react-icons/fa6";
-import { FcGoogle } from "react-icons/fc";
-import { motion } from "framer-motion";
-import toast from "react-hot-toast";
+import { Compass, AlertCircle } from "lucide-react";
+import { apiFetch } from "@/lib/api";
 
-const RegisterPage = () => {
-    const [showPassword, setShowPassword] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+export default function RegisterPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const handleRegister = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        // এখানে আপনার authClient.signUp কল হবে
-        console.log("Registering:", formData);
-        
-        setTimeout(() => {
-            setLoading(false);
-            toast.success("Account created successfully!");
-        }, 1500);
-    };
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    if (!name || !email || !password || !confirm) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    if (password !== confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await apiFetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Registration failed.");
+        setLoading(false);
+        return;
+      }
+      router.push("/");
+      router.refresh();
+    } catch {
+      setError("Network error. Please try again.");
+      setLoading(false);
+    }
+  }
 
-    const inputGroupClass = `flex items-center gap-3 px-4 h-12 bg-base-100 rounded-xl border border-base-300 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-sm`;
-    const inputClass = `w-full bg-transparent text-sm text-base-content placeholder:text-base-content/40 outline-none`;
+  return (
+    <div className="container-app py-16 max-w-md mx-auto">
+      <div className="text-center mb-8">
+        <Compass className="mx-auto text-[var(--color-primary)] mb-2" size={32} />
+        <h1 className="text-2xl font-extrabold">Create your account</h1>
+        <p className="text-gray-500 text-sm mt-1">Join Wanderly to book and list tours.</p>
+      </div>
 
-    return (
-        <section className="relative min-h-[95vh] w-full flex items-center justify-center bg-base-100 px-4 py-16 overflow-hidden">
-            <div className="absolute top-10 left-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div className="absolute bottom-10 right-10 w-80 h-80 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+      <form onSubmit={submit} className="card-base p-6 space-y-4">
+        {error && (
+          <div className="flex items-center gap-2 bg-red-50 text-red-600 text-sm p-3 rounded-lg">
+            <AlertCircle size={16} /> {error}
+          </div>
+        )}
+        <div>
+          <label className="text-xs font-semibold text-gray-500 block mb-1.5">Full Name</label>
+          <input value={name} onChange={(e) => setName(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[var(--color-primary)]" placeholder="Jane Traveler" />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-gray-500 block mb-1.5">Email</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[var(--color-primary)]" placeholder="you@example.com" />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-gray-500 block mb-1.5">Password</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[var(--color-primary)]" placeholder="At least 6 characters" />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-gray-500 block mb-1.5">Confirm Password</label>
+          <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[var(--color-primary)]" placeholder="Repeat password" />
+        </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="relative z-10 w-full max-w-[460px] p-2 bg-base-200/50 backdrop-blur-md rounded-3xl border border-base-300/60 shadow-2xl"
-            >
-                <div className="w-full h-full p-6 sm:p-9 bg-base-100 rounded-[1.3rem]">
-                    <div className="text-center mb-7 flex flex-col items-center gap-3">
-                        <div className="inline-flex items-center gap-2 p-2 bg-primary/10 rounded-xl text-primary mb-1">
-                            <FaUtensils className="w-4 h-4" />
-                        </div>
-                        <h2 className="text-3xl font-black text-base-content tracking-tight mb-1">
-                            Create <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">Account</span>
-                        </h2>
-                        <p className="text-sm font-medium text-base-content/60">Join RecipeHub to explore secret culinary methods</p>
-                    </div>
+        <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
+          {loading ? "Creating account..." : "Sign up"}
+        </button>
+      </form>
 
-                    <form onSubmit={handleRegister} className="space-y-4">
-                        {/* Name Input */}
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold uppercase tracking-wider text-base-content/60 pl-1">Full Name</label>
-                            <div className={inputGroupClass}>
-                                <FaUser className="text-base-content/30 text-lg" />
-                                <input type="text" required placeholder="Enter Your Name" className={inputClass} onChange={(e) => setFormData({...formData, name: e.target.value})} />
-                            </div>
-                        </div>
-
-                        {/* Email Input */}
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold uppercase tracking-wider text-base-content/60 pl-1">Email Address</label>
-                            <div className={inputGroupClass}>
-                                <FaEnvelope className="text-base-content/30 text-lg" />
-                                <input type="email" required placeholder="Enter Your Email" className={inputClass} onChange={(e) => setFormData({...formData, email: e.target.value})} />
-                            </div>
-                        </div>
-
-                        {/* Password Input */}
-                        <div className="space-y-1.5 relative">
-                            <label className="text-xs font-bold uppercase tracking-wider text-base-content/60 pl-1">Password</label>
-                            <div className={inputGroupClass}>
-                                <FaLock className="text-base-content/30 text-lg" />
-                                <input type={showPassword ? "text" : "password"} required placeholder="••••••••" className={`${inputClass} pr-10`} onChange={(e) => setFormData({...formData, password: e.target.value})} />
-                            </div>
-                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 bottom-3.5 text-base-content/30 hover:text-primary transition-colors p-1 rounded-md">
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
-                        </div>
-
-                        <button type="submit" disabled={loading} className="w-full h-12 flex items-center justify-center gap-2 bg-gradient-to-r from-primary via-accent to-secondary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:opacity-95 transition-all">
-                            {loading ? "Creating..." : "Register Now"} {!loading && <FaArrowRight />}
-                        </button>
-                    </form>
-
-                    <p className="text-center text-sm text-base-content/60 font-medium mt-6">
-                        Already have an account? <Link href="/login" className="font-bold text-primary hover:underline">Log In</Link>
-                    </p>
-                </div>
-            </motion.div>
-        </section>
-    );
-};
-
-export default RegisterPage;
+      <p className="text-center text-sm text-gray-500 mt-6">
+        Already have an account? <Link href="/login" className="text-[var(--color-primary)] font-semibold">Log in</Link>
+      </p>
+    </div>
+  );
+}

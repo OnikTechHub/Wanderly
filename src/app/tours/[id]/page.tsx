@@ -7,10 +7,11 @@ import TourCard from "@/components/TourCard";
 
 export default async function TourDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const tour = getTourById(id);
+  const tour = await getTourById(id);
   if (!tour) notFound();
 
-  const related = getTours()
+  const allTours = await getTours();
+  const related = allTours
     .filter((t) => t.category === tour.category && t.id !== tour.id)
     .slice(0, 4);
 

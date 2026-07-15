@@ -7,8 +7,8 @@ import {
 import { getTours } from "@/lib/db";
 import TourCard from "@/components/TourCard";
 
-export default function Home() {
-  const tours = getTours();
+export default async function Home() {
+  const tours = await getTours();
   const popular = [...tours].sort((a, b) => b.rating - a.rating).slice(0, 4);
 
   const categories = [
